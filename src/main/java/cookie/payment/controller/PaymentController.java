@@ -1,49 +1,58 @@
 package cookie.payment.controller;
 
 import cookie.payment.mapper.PaymentMapper;
-import cookie.payment.model.Payments;
+import cookie.payment.model.Payment;
+import cookie.payment.service.PaymentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("rest/payment")
+@RequestMapping("payment")
 public class PaymentController {
 
-    private PaymentMapper paymentMapper;
+    private final PaymentService paymentService;
 
-    public PaymentController(PaymentMapper paymentMapper){ this.paymentMapper = paymentMapper;}
+    @Autowired
+    public PaymentController(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
 
     @GetMapping("")
-    public List<Payments> getAll() {return  paymentMapper.findAll();}
+    public ResponseEntity<List<Payment>> readAll() {
+        final List<Payment> payments = paymentService.readAll();
 
-    @PostMapping("/update")
-    private List<Payments> update(@RequestBody Map<String, String> paymentUpdate){
-        Payments payment = new Payments();
-        payment.setName(paymentUpdate.get("name"));
-        payment.setId(Integer.parseInt(paymentUpdate.get("id")));
-        payment.setCash(Integer.parseInt(paymentUpdate.get("cash")));
-        paymentMapper.updatePayments(payment);
-        return paymentMapper.findAll();
-    }
-    @PostMapping("/create")
-    private List<Payments> create(@RequestBody Map<String, String> paymentCreate){
-        Payments payment = new Payments();
-        payment.setName(paymentCreate.get("name"));
-        payment.setId(Integer.parseInt(paymentCreate.get("id")));
-        payment.setCash(Integer.parseInt(paymentCreate.get("cash")));
-        paymentMapper.paymentCreate(payment);
-        return paymentMapper.findAll();
+        return payments != null && !payments.isEmpty()
+                ? new ResponseEntity<>(payments, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/delete")
-    private List<Payments> delete(@RequestBody Map<String, String> paymentDelete){
-        Payments payment = new Payments();
-        payment.setName(paymentDelete.get("name"));
-        payment.setId(Integer.parseInt(paymentDelete.get("id")));
-        payment.setCash(Integer.parseInt(paymentDelete.get("cash")));
-        paymentMapper.paymentDelete(payment);
-        return paymentMapper.findAll();
+
+    @PostMapping("")
+    private ResponseEntity<?> update(@RequestBody Map<String, String> paymentUpdate){
+        final boolean updated = paymentService.update(paymentUpdate);
+
+        return updated
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
+    @PutMapping("")
+    private ResponseEntity<?> create(@RequestBody Map<String, String> paymentCreate){
+        paymentService.create(paymentCreate);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("{id}")
+    private ResponseEntity<?> delete(@PathVariable(name = "id") int id){
+        final boolean deleted = paymentService.delete(id);
+
+        return deleted
+                ? new ResponseEntity<>(HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 }

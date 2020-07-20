@@ -9,7 +9,7 @@ function getIndex(list, id) {
 }
 
 
-var paymentApi = Vue.resource('rest/payment{/id}');
+var paymentApi = Vue.resource('payment{/id}');
 
 Vue.component('payment-form',{
     props: ['payments', 'paymentAttr'],

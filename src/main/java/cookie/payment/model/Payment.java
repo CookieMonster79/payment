@@ -1,6 +1,6 @@
 package cookie.payment.model;
 
-public class Payments {
+public class Payment {
 
     private Integer id;
     private String name;
