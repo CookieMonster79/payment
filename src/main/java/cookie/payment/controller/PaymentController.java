@@ -31,6 +31,11 @@ public class PaymentController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<?> payment(@RequestBody Map<String,String> paymentRead){
+        final boolean paymentRead = paymentService.readOne(paymentRead);
+
+    }
 
     @PostMapping("")
     private ResponseEntity<?> update(@RequestBody Map<String, String> paymentUpdate){

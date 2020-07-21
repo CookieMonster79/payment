@@ -34,7 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment read(int id) {
+    public Payment readOne(int id) {
         return null;
     }
 
@@ -44,7 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setName(paymentUpdate.get("name"));
         payment.setId(Integer.parseInt(paymentUpdate.get("id")));
         payment.setCash(Integer.parseInt(paymentUpdate.get("cash")));
-        paymentMapper.updatePayments(payment);
+        paymentMapper.paymentUpdate(payment);
         return true;
     }
 

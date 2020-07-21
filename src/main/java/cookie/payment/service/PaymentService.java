@@ -12,7 +12,7 @@ public interface PaymentService {
 
     List<Payment> readAll();
 
-    Payment read(int id);
+    Payment readOne(int id);
 
     boolean update (@RequestBody Map<String, String> paymentUpdate);
 
